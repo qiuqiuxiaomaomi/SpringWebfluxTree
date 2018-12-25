@@ -6,6 +6,13 @@ Spring响应式编程技术研究
 ![](https://i.imgur.com/h7CJzh9.png)
 
 <pre>
+    在Java 7推出异步I/O库，以及Servlet3.1增加了对异步I/O的支持之后，Tomcat等Servlet容器也随
+    后开始支持异步I/O，然后Spring WebMVC也增加了对Reactor库的支持，所以上边第4）步如果不是
+    将spring-boot-starter-web替换为spring-boot-starter-WebFlux，而是增加reactor-core的依
+    赖的话，仍然可以用注解的方式开发基于Tomcat的响应式应用。
+</pre>
+
+<pre>
 左侧是传统的基于Servlet的Spring Web MVC框架，右侧是5.0版本新引入的基于Reactive Streams
 的Spring WebFlux框架，从上到下依次是Router Functions，WebFlux，Reactive Streams三个
 新组件。
@@ -41,6 +48,26 @@ WebFlux:
 </pre>
 
 <pre>
+传统Spring处理请求的方式：
+      Controller定义定义对Request的处理逻辑的方式，主要有两个点：
+           1）方法定义处理逻辑；
+           2）然后用@RequestMapping注解定义好这个方法对什么样url进行响应
+
+在WebFlux的函数式开发模式中，我们用HandlerFunction和RouterFunction来实现上边这两点
+      1）HandlerFunction相当于Controller中的具体处理方法，输入为请求，输出为装在Mono中的响应
+      2）RouterFunction，顾名思义，路由，相当于@RequestMapping，用来判断什么样的url映射到
+         那个具体的HandlerFunction，输入为请求，输出为装在Mono里边的Handlerfunction
+</pre>
+
+<pre>
+各个数据库都开始陆续推出异步驱动，目前Spring Data支持的可以进行响应式数据访问的数据库有
+      MongoDB、
+      Redis、
+      Apache Cassandra、
+      CouchDB
+</pre>
+
+<pre>
 Reactor类型：
 
       Flux<T>:
@@ -63,3 +90,27 @@ Reactor类型：
       打交道。而 Web Flux 则会实现 Subscriber ，onNext 时将业务开发人员编写的 Mono 或 Flux 
       转换为 HTTP Response 返回给客户端。
 </pre>
+
+<pre>
+服务器推送：
+
+	我们可能会遇到一些需要网页与服务器端保持连接（起码看上去是保持连接）的需求，比如类似微信网页
+    版的聊天类应用，比如需要频繁更新页面数据的监控系统页面或股票看盘页面。我们通常采用如下几种技术：
+	
+	短轮询：
+        利用ajax定期向服务器请求，无论数据是否更新立马返回数据，高并发情况下可能会对服务器和带宽
+        造成压力；
+	长轮询：
+        利用comet不断向服务器发起请求，服务器将请求暂时挂起，直到有新的数据的时候才返回，相对短
+        轮询减少了请求次数；
+	SSE：
+        服务端推送（Server Send Event），在客户端发起一次请求后会保持该连接，服务器端基于该连
+        接持续向客户端发送数据，从HTML5开始加入。
+	Websocket：
+        这是也是一种保持连接的技术，并且是双向的，从HTML5开始加入，并非完全基于HTTP，适合于频繁
+        和较大流量的双向通讯场景。
+</pre>
+
+Response Streaming数据流
+
+![](https://i.imgur.com/lN5CUDm.png)

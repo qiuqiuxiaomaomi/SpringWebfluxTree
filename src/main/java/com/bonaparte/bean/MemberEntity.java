@@ -1,6 +1,10 @@
 package com.bonaparte.bean;
 
+import org.springframework.data.annotation.Id;
+
 public class MemberEntity {
+    @Id
+    String id;
     String cardNum;
     String phone;
     String name;
@@ -36,5 +40,13 @@ public class MemberEntity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

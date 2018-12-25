@@ -3,11 +3,10 @@ package com.bonaparte.controller;
 
 import com.bonaparte.bean.MemberEntity;
 import com.bonaparte.service.BonaparteService;
+import com.bonaparte.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.codec.ServerSentEvent;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuples;
@@ -20,6 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class BonaparteController {
     @Autowired
     BonaparteService bonaparteService;
+    @Autowired
+    private MemberService memberService;
 
     @RequestMapping("/helloworld")
     public Mono<String> saveHelloWorld(){
@@ -36,7 +37,7 @@ public class BonaparteController {
                 .build());
     }
 
-    @RequestMapping("/add/")
+    @RequestMapping("/add")
     public Flux<MemberEntity> add(){
         for (int i = 100000; i < 100033; i++) {
             MemberEntity memberEntity = new MemberEntity();
@@ -51,5 +52,25 @@ public class BonaparteController {
     @RequestMapping("/list")
     public Flux<MemberEntity> list(){
         return bonaparteService.getAll();
+    }
+
+    @PostMapping("")
+    public Mono<MemberEntity> save(MemberEntity memberEntity){
+        return memberService.save(memberEntity);
+    }
+
+    @DeleteMapping("/delete/{userName}")
+    public Mono<Long> deleteByName(@PathVariable String userName){
+        return memberService.deleteByName(userName);
+    }
+
+    @GetMapping("/{userName}")
+    public Mono<MemberEntity> findUserByName(@PathVariable String userName){
+        return memberService.findByName(userName);
+    }
+
+    @GetMapping("/findAll")
+    public Flux<MemberEntity> findAll(){
+        return memberService.findAll();
     }
 }
